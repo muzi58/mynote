@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="page-title">管理员控制面板</h2>
+    <a href="{% url 'home' %}" class="btn btn-secondary">返回主页</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 25%">用户名</th>
+                    <th style="width: 25%">密码</th>
+                    <th style="width: 25%">占用空间</th>
+                    <th style="width: 25%" class="text-center">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.password }}</td>
+                    <td>{{ user.space_used }}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-sm btn-primary edit-password-btn action-btn me-2" data-user-id="{{ user.id }}" data-bs-toggle="modal" data-bs-target="#editPasswordModal" data-username="{{ user.username }}">
+                                <i class="bi bi-pencil-square me-1"></i>修改密码
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-user-btn action-btn" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+                                <i class="bi bi-trash me-1"></i>删除用户
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 修改密码模态框 -->
+<div class="modal fade" id="editPasswordModal" tabindex="-1" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPasswordModalLabel">修改密码</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-password-form">
+                    <input type="hidden" id="edit-user-id" name="user_id">
+                    <div class="mb-3">
+                        <label for="edit-username" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="edit-username" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new-password" class="form-label">新密码</label>
+                        <input type="password" class="form-control" id="new-password" name="new_password" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save-password-btn">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 修改密码按钮点击事件
+        $('.edit-password-btn').click(function() {
+            const userId = $(this).data('user-id');
+            const username = $(this).data('username');
+            
+            $('#edit-user-id').val(userId);
+            $('#edit-username').val(username);
+        });
+        
+        // 保存密码按钮点击事件
+        $('#save-password-btn').click(function() {
+            const userId = $('#edit-user-id').val();
+            const newPassword = $('#new-password').val();
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            $.ajax({
+                url: '{% url "update_user_password" %}',
+                type: 'POST',
+                data: {
+                    user_id: userId,
+                    new_password: newPassword
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('密码修改成功');
+                        location.reload();
+                    } else {
+                        alert('密码修改失败: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('请求失败，请重试');
+                }
+            });
+        });
+        
+        // 删除用户按钮点击事件
+        $('.delete-user-btn').click(function() {
+            const userId = $(this).data('user-id');
+            const username = $(this).data('username');
+            
+            if (confirm(`确定要删除用户 "${username}" 吗？此操作不可恢复。`)) {
+                $.ajax({
+                    url: '{% url "delete_user" %}',
+                    type: 'POST',
+                    data: {
+                        user_id: userId
+                    },
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('用户删除成功');
+                            location.reload();
+                        } else {
+                            alert('用户删除失败: ' + response.error);
+                        }
+                    },
+                    error: function() {
+                        alert('请求失败，请重试');
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

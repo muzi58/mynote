@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{% url 'add_note' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>添加备忘录
+        </a>
+    </div>
+    <div class="text-end">
+        <span class="badge bg-secondary">
+            <i class="bi bi-hdd me-1"></i>
+            已用: {{ used_space }} / 剩余: {{ remaining_space }} (总计: 50MB)
+        </span>
+    </div>
+</div>
+
+{% if notes %}
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 20%">时间</th>
+                    <th style="width: 60%">内容</th>
+                    <th style="width: 20%" class="text-center">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for note in notes %}
+                <tr>
+                    <td>{{ note.timestamp }}</td>
+                    <td class="content-cell">
+                        {% if note.has_file %}
+                        <span class="badge bg-info me-2">附件</span>
+                        <span>{{ note.file_name }}</span>
+                        {% else %}
+                        <div class="truncate">{{ note.content }}</div>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center">
+                            <a href="{% url 'note_detail' note.id %}" class="btn btn-sm btn-secondary action-btn">
+                                <i class="bi bi-eye me-1"></i>详情
+                            </a>
+                            <button class="btn btn-sm btn-danger delete-btn action-btn" data-note-id="{{ note.id }}">
+                                <i class="bi bi-trash me-1"></i>删除
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card shadow-sm empty-state">
+    <div class="card-body text-center py-5">
+        <div class="empty-icon mb-3">
+            <i class="bi bi-journal-text" style="font-size: 3rem; color: #adb5bd;"></i>
+        </div>
+        <p class="text-muted mb-3">暂无备忘录</p>
+        <a href="{% url 'add_note' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>添加第一条备忘录
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 删除笔记
+        $('.delete-btn').click(function() {
+            if (confirm('确定要删除这条备忘录吗？')) {
+                const noteId = $(this).data('note-id');
+                
+                $.ajax({
+                    url: `/delete/${noteId}/`,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.reload();
+                        } else {
+                            alert('删除失败');
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

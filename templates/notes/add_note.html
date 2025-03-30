@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4>添加备忘录</h4>
+    </div>
+    <div class="card-body">
+        <form id="add-note-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="timestamp" class="form-label">时间</label>
+                <input type="text" class="form-control" id="timestamp" name="timestamp" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">内容 (内容或附件至少填写一项)</label>
+                <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="file" class="form-label">附件</label>
+                <div class="input-group">
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <div id="file-info" class="mt-2" style="display: none;">
+                    <span id="file-name"></span>
+                    <span class="badge bg-success ms-2">已上传</span>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary me-2">提交</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">返回</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 脚本部分保持不变
+    $(document).ready(function() {
+        // 设置默认时间为当前时间
+        function setCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            // 格式化为可读的时间字符串
+            const dateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            $('#timestamp').val(dateTimeString);
+        }
+        
+        // 页面加载时设置当前时间
+        setCurrentDateTime();
+        
+        // 每秒更新一次时间
+        setInterval(setCurrentDateTime, 1000);
+        
+        // 文件上传预览
+        $('#file').change(function() {
+            const file = this.files[0];
+            if (file) {
+                $('#file-name').text(file.name);
+                $('#file-info').show();
+            } else {
+                $('#file-info').hide();
+            }
+        });
+        
+        // AJAX提交表单
+        $('#add-note-form').submit(function(e) {
+            e.preventDefault();
+            
+            // 提交前再次更新时间戳，确保使用最新时间
+            setCurrentDateTime();
+            
+            // 验证内容或文件至少有一项
+            const content = $('#content').val().trim();
+            const file = $('#file')[0].files[0];
+            
+            if (!content && !file) {
+                alert('内容和附件至少填写一项');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            
+            $.ajax({
+                url: '{% url "add_note" %}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = '{% url "home" %}';
+                    } else {
+                        alert('添加失败：' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('添加请求失败，请重试');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

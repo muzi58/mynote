@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4>备忘录详情</h4>
+        <a href="{% url 'home' %}" class="btn btn-secondary">返回</a>
+    </div>
+    <div class="card-body">
+        <form id="update-note-form" method="post" action="{% url 'update_note' note.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="timestamp" class="form-label">时间</label>
+                <input type="text" class="form-control" id="timestamp" value="{{ note.timestamp }}" readonly>
+            </div>
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="content" class="form-label mb-0">内容</label>
+                    <button type="button" id="copy-btn" class="btn btn-sm btn-secondary">复制</button>
+                </div>
+                <div id="view-mode">
+                    <div class="code-container">
+                        <pre class="hljs-line-numbers" id="line-numbers"></pre>
+                        <pre><code class="note-content" id="content-display">{{ note.content }}</code></pre>
+                    </div>
+                    {% if note.has_file %}
+                    <div class="mt-3">
+                        <strong>附件：</strong>
+                        <a href="{% url 'download_file' note_id=note.id %}" class="text-primary">{{ note.file_name }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div id="edit-mode" style="display: none;">
+                    <textarea class="form-control" id="content" name="content" rows="10">{{ note.content }}</textarea>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <button type="button" id="edit-btn" class="btn btn-primary me-2">修改</button>
+                <button type="submit" id="submit-btn" class="btn btn-success me-2" style="display: none;">提交</button>
+                <button type="button" id="cancel-btn" class="btn btn-secondary" style="display: none;">取消</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 添加行号
+        function addLineNumbers() {
+            const content = $('#content-display').text();
+            const lines = content.split('\n');
+            let lineNumbers = '';
+            for (let i = 1; i <= lines.length; i++) {
+                lineNumbers += i + '\n';
+            }
+            $('#line-numbers').text(lineNumbers);
+        }
+        
+        // 初始化代码高亮和行号
+        hljs.highlightElement(document.getElementById('content-display'));
+        addLineNumbers();
+        
+        // 切换到编辑模式
+        $('#edit-btn').click(function() {
+            $('#view-mode').hide();
+            $('#edit-mode').show();
+            $('#edit-btn').hide();
+            $('#copy-btn').hide();
+            $('#submit-btn').show();
+            $('#cancel-btn').show();
+        });
+        
+        // 取消编辑
+        $('#cancel-btn').click(function() {
+            $('#edit-mode').hide();
+            $('#view-mode').show();
+            $('#submit-btn').hide();
+            $('#cancel-btn').hide();
+            $('#edit-btn').show();
+            $('#copy-btn').show();
+        });
+        
+        // 复制内容
+        $('#copy-btn').click(function() {
+            const noteId = '{{ note.id }}';
+            $.ajax({
+                url: `/copy/${noteId}/`,
+                type: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // 创建临时textarea来复制内容
+                        const textarea = document.createElement('textarea');
+                        textarea.value = response.content;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        
+                        // 显示复制成功
+                        $('#copy-btn').addClass('copy-success');
+                        $('#copy-btn').text('已复制');
+                        
+                        // 2秒后恢复按钮状态
+                        setTimeout(function() {
+                            $('#copy-btn').removeClass('copy-success');
+                            $('#copy-btn').text('复制');
+                        }, 2000);
+                    }
+                }
+            });
+        });
+        
+        // AJAX提交表单
+        $('#update-note-form').submit(function(e) {
+            e.preventDefault();
+            const noteId = '{{ note.id }}';
+            const content = $('#content').val();
+            
+            $.ajax({
+                url: `/update/${noteId}/`,
+                type: 'POST',
+                data: {
+                    content: content
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // 更新显示内容
+                        $('#content-display').text(content);
+                        // 重新高亮和添加行号
+                        hljs.highlightElement(document.getElementById('content-display'));
+                        addLineNumbers();
+                        
+                        // 切换回查看模式
+                        $('#edit-mode').hide();
+                        $('#view-mode').show();
+                        $('#submit-btn').hide();
+                        $('#cancel-btn').hide();
+                        $('#edit-btn').show();
+                        $('#copy-btn').show();
+                    } else {
+                        alert('更新失败：' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('更新请求失败，请重试');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

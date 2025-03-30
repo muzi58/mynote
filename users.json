@@ -1,0 +1,15 @@
+{
+    "1": {
+        "username": "muzi58",
+        "password": "88888888"
+    },
+    "2": {
+        "username": "admin",
+        "password": "888888"
+    },
+    "3": {
+        "username": "muzi69",
+        "password": "000000",
+        "is_admin": false
+    }
+}

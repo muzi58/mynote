@@ -1,0 +1,444 @@
+/* 全局样式 - 抹茶绿背景 */
+body {
+    padding-top: 20px;
+    background-color: #e8f3e8; /* 柔和的抹茶绿背景 */
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+/* 卡片样式 */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+    transition: box-shadow 0.3s ease;
+    background-color: #fff; /* 白色内容区 */
+}
+
+.card:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 16px 20px;
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* 导航栏样式 */
+.navbar {
+    margin-bottom: 24px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 12px 20px;
+    background-color: #fff !important;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #3a7561; /* 深抹茶绿色 */
+}
+
+.navbar-brand:hover {
+    color: #2c5a4c;
+}
+
+.nav-link {
+    color: #555;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #3a7561;
+}
+
+/* 按钮样式 */
+.btn {
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-sm {
+    padding: 4px 12px;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background-color: #5b9279; /* 抹茶绿按钮 */
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #4a7a64;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.btn-secondary:hover {
+    background-color: #dee2e6;
+    color: #212529;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-success {
+    background-color: #5d9a6f;
+}
+
+.btn-success:hover {
+    background-color: #4e8a5e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger {
+    background-color: #e74c3c; /* 更鲜明的红色 */
+}
+
+.btn-danger:hover {
+    background-color: #c0392b; /* 更鲜艳的红色悬停状态 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.copy-success {
+    color: #fff !important;
+    background-color: #5d9a6f !important;
+}
+
+/* 表单样式 */
+.form-control {
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    padding: 10px 14px;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+}
+
+.form-control:focus {
+    border-color: #5b9279;
+    box-shadow: 0 0 0 2px rgba(91, 146, 121, 0.25);
+    background-color: #fff;
+}
+
+textarea.form-control {
+    padding: 12px 14px;
+}
+
+/* 表格样式 */
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+    background-color: #f0f7f0; /* 淡抹茶绿表头 */
+    font-weight: 600;
+    border-top: none;
+    color: #3a7561;
+    text-align: center; /* 表头文字居中 */
+}
+
+.table td, .table th {
+    padding: 12px 16px;
+    vertical-align: middle;
+    border-color: #f1f3f5;
+}
+
+.table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* 笔记内容样式 */
+.note-content {
+    white-space: pre-wrap;
+    margin: 0;
+    padding: 10px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.truncate {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 代码高亮和行号样式 */
+.code-container {
+    display: flex;
+    background-color: #282c34;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hljs-line-numbers {
+    text-align: right;
+    color: #999;
+    padding: 10px;
+    border-right: 1px solid #444;
+    margin-right: 0;
+    user-select: none;
+    background-color: #282c34;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* 徽章样式 */
+.badge {
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-weight: 500;
+}
+
+.badge.bg-info {
+    background-color: #e7f5ff !important;
+    color: #4a6fa5;
+}
+
+.badge.bg-success {
+    background-color: #ebf9f0 !important;
+    color: #5d9a6f;
+}
+
+/* 警告框样式 */
+.alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 下拉菜单样式 */
+.dropdown-menu {
+    border-radius: 6px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    color: #495057;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* 主页标题样式 */
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0;
+}
+
+/* 卡片阴影效果 */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* 空状态样式 */
+.empty-state {
+    background-color: #fff;
+}
+
+.empty-icon {
+    margin-bottom: 1rem;
+}
+
+/* 登录表单样式优化 */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px 0;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin: 0 auto; /* 确保卡片居中 */
+}
+
+.login-header {
+    padding: 24px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: center; /* 确保标题居中 */
+}
+
+.login-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #3a7561;
+    margin: 0;
+    text-align: center; /* 确保标题文字居中 */
+}
+
+.login-body {
+    padding: 30px;
+}
+
+.login-form .form-control {
+    border-radius: 10px;
+    padding: 12px 16px;
+    height: auto;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.login-form .form-control:focus {
+    background-color: #fff;
+    border-color: #5b9279;
+    box-shadow: 0 0 0 3px rgba(91, 146, 121, 0.15);
+}
+
+.login-form .form-label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #495057;
+}
+
+.login-btn {
+    padding: 10px 30px; /* 调整按钮大小 */
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+}
+
+.register-link {
+    display: block;
+    text-align: center;
+    color: #5b9279;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.register-link:hover {
+    color: #3a7561;
+    text-decoration: underline;
+}
+
+.input-group-text {
+    border: 1px solid #dee2e6;
+}
+
+.input-group-text i {
+    color: #6c757d;
+}
+
+/* 按钮内图标样式 */
+.btn i {
+    vertical-align: -0.125em;
+}
+
+/* 表格样式优化 */
+.table th {
+    font-weight: 600;
+    background-color: #f0f7f0;
+    color: #3a7561;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* 响应式调整 */
+@media (max-width: 576px) {
+    .action-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .action-btn i {
+        margin-right: 0 !important;
+    }
+    
+    .action-btn span {
+        display: none;
+    }
+}
+
+/* 内容栏样式优化 */
+.content-cell {
+    max-width: 0; /* 关键属性，允许内容被截断 */
+    padding-right: 20px; /* 为省略号留出空间 */
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* 操作按钮样式 */
+.action-btn {
+    margin: 0 3px; /* 调整按钮间距 */
+}
+
+/* 表格样式 */
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    table-layout: fixed; /* 固定表格布局 */
+}
+
+.table th {
+    background-color: #f0f7f0; /* 淡抹茶绿表头 */
+    font-weight: 600;
+    border-top: none;
+    color: #3a7561;
+}
+
+.table td, .table th {
+    padding: 12px 16px;
+    vertical-align: middle;
+    border-color: #f1f3f5;
+}
+
+.table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+}
